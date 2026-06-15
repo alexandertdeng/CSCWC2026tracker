@@ -106,6 +106,10 @@
       var tr = document.createElement("tr");
       tr.className = "row" + (row.eliminated ? " eliminated" : " r" + rank);
 
+      function countryFlag(name) {
+        var map = (typeof TEAM_FLAGS !== "undefined") ? TEAM_FLAGS : {};
+        return map[name] || "";
+      }
       var chips = row.teams.map(function (t) {
         var cls = "chip" + (t.known ? "" : " bad");
         var title = t.known
@@ -113,6 +117,7 @@
              + (t.shootout ? " · incl. " + t.shootout + " shootout" : ""))
           : "Unknown team name — check spelling against config.js";
         return '<span class="' + cls + '" title="' + title + '">' +
+               (countryFlag(t.name) ? '<span class="flag">' + countryFlag(t.name) + '</span> ' : '') +
                escapeHtml(t.name) +
                ' <span class="stat">P:' + t.matches + '</span>' +
                ' <span class="g">G:' + t.goals + '</span></span>';
