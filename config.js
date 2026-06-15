@@ -102,7 +102,7 @@ entries: [
   {
     nickname: "Kristina",
     imageUrl: "https://gstt-csc.github.io/assets/img/team/kristina.jpg",
-    teams: ["Uruguay", "South Korea", "Canada"]
+    teams: ["Uruguay", "South Korea", "Canada", "Jordan"]
   },
 ],
 };
