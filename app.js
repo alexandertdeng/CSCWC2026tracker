@@ -54,7 +54,7 @@
     return set;
   }
 
-  function render(tally) {
+  function render(tally, matches) {
     var validSet = validTeamSet();
     var unknown = [];
 
@@ -85,6 +85,7 @@
         shootout: shootout,
         matches: matches,
         eliminated: total >= 22,
+        perfect: total === 21,
       };
     });
 
@@ -104,8 +105,18 @@
     var activeRank = 0;
     rows.forEach(function (row, i) {
       var rank = row.eliminated ? null : ++activeRank;
+      var badge = row.eliminated ? "OUT" : rank;
+      var statusBadge = row.eliminated
+        ? '<span class="status-badge ko-badge" aria-label="Knocked out">KO</span>'
+        : (row.perfect ? '<span class="status-badge perfect-badge" aria-label="Perfect score">Perfect!</span>' : '');
+      var avatar = row.imageUrl
+        ? '<img class="avatar" src="' + escapeHtml(row.imageUrl) + '" alt="" loading="lazy">'
+        : '';
       var tr = document.createElement("tr");
-      tr.className = "row" + (row.eliminated ? " eliminated" : " r" + rank);
+      tr.className = "row" + (row.eliminated ? " eliminated" : (row.perfect ? " perfect perfect-row r" + rank : " r" + rank));
+      if (row.perfect) {
+        tr.style.background = "rgba(255, 215, 0, 0.18)";
+      }
 
       function countryFlag(name) {
         var map = (typeof TEAM_FLAGS !== "undefined") ? TEAM_FLAGS : {};
@@ -124,20 +135,15 @@
                ' <span class="g">G:' + t.goals + '</span></span>';
       }).join("");
 
-      var badge = row.eliminated ? "OUT" : rank;
-      var avatar = row.imageUrl
-        ? '<img class="avatar" src="' + escapeHtml(row.imageUrl) + '" alt="" loading="lazy">'
-        : '<span class="avatar avatar-fallback">' + escapeHtml(row.nickname.charAt(0) || "?") + '</span>';
-
       tr.innerHTML =
         '<td class="col-rank"><span class="rank-badge">' + badge + '</span></td>' +
-        '<td><div class="player">' + avatar + '<div class="player-text"><div class="nick">' + escapeHtml(row.nickname) +
-          (row.eliminated ? ' <span class="elim-tag">Eliminated</span>' : '') + '</div></div></div></td>' +
+        '<td><div class="player-cell">' + avatar + '<div class="player-text"><div class="nick-line"><span class="nick">' + escapeHtml(row.nickname) + '</span>' +
+          statusBadge + '</div></div></div></td>' +
         '<td><div class="teams">' + chips + '</div></td>' +
         '<td class="goals-cell"><span class="goals-num">' + row.total + '</span>' +
         '<span class="goals-sub">' + (row.eliminated
           ? "eliminated · 22+ goals"
-          : (row.shootout ? "incl. " + row.shootout + " shootout" : "across all teams")) + '</span></td>' +
+          : (row.perfect ? "perfect · exactly 21 goals" : (row.shootout ? "incl. " + row.shootout + " shootout" : "across all teams"))) + '</span></td>' +
         '<td class="played-cell"><span class="played-num">' + row.matches + '</span></td>';
       body.appendChild(tr);
     });
@@ -215,7 +221,7 @@
       .then(function (data) {
         var matches = (data && data.matches) || [];
         var played = matches.filter(function (m) { return m.score; }).length;
-        render(tallyTeams(matches));
+        render(tallyTeams(matches), matches);
         renderRecent(matches);
         var when = new Date();
         $("#updated").textContent = "Updated " + when.toLocaleString();
@@ -238,7 +244,7 @@
   // Render configured participants immediately, before the live data request finishes.
   // This prevents any placeholder rows hardcoded in index.html from remaining visible
   // if the football data feed is slow, unavailable, or blocked.
-  render({});
+  render({}, []);
 
   load();
   if (CONFIG.refreshMinutes > 0) {
