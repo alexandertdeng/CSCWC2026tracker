@@ -75,15 +75,19 @@
           known: known,
         };
       });
+      var total = inPlay + shootout;
       return {
         nickname: entry.nickname,
         teams: teams,
-        total: inPlay + shootout,
+        total: total,
         shootout: shootout,
+        eliminated: total >= 22,
       };
     });
 
     rows.sort(function (a, b) {
+      // Eliminated nicknames always sink to the bottom.
+      if (a.eliminated !== b.eliminated) return a.eliminated ? 1 : -1;
       if (b.total !== a.total) return b.total - a.total;
       return a.nickname.localeCompare(b.nickname);
     });
@@ -94,10 +98,11 @@
       body.innerHTML = '<tr><td colspan="4" class="empty">No participants yet. Add some in config.js.</td></tr>';
     }
 
+    var activeRank = 0;
     rows.forEach(function (row, i) {
-      var rank = i + 1;
+      var rank = row.eliminated ? null : ++activeRank;
       var tr = document.createElement("tr");
-      tr.className = "row r" + rank;
+      tr.className = "row" + (row.eliminated ? " eliminated" : " r" + rank);
 
       var chips = row.teams.map(function (t) {
         var cls = "chip" + (t.known ? "" : " bad");
@@ -106,16 +111,21 @@
              + (t.shootout ? " · incl. " + t.shootout + " shootout" : ""))
           : "Unknown team name — check spelling against config.js";
         return '<span class="' + cls + '" title="' + title + '">' +
-               escapeHtml(t.name) + ' <span class="g">' + t.goals + '</span></span>';
+               escapeHtml(t.name) +
+               ' <span class="stat">P:' + t.matches + '</span>' +
+               ' <span class="g">G:' + t.goals + '</span></span>';
       }).join("");
 
-      var sub = row.shootout
-        ? "incl. " + row.shootout + " shootout"
-        : "across all teams";
+      var sub = row.eliminated
+        ? "eliminated · 22+ goals"
+        : (row.shootout ? "incl. " + row.shootout + " shootout" : "across all teams");
+
+      var badge = row.eliminated ? "OUT" : rank;
 
       tr.innerHTML =
-        '<td class="col-rank"><span class="rank-badge">' + rank + '</span></td>' +
-        '<td><div class="nick">' + escapeHtml(row.nickname) + '</div></td>' +
+        '<td class="col-rank"><span class="rank-badge">' + badge + '</span></td>' +
+        '<td><div class="nick">' + escapeHtml(row.nickname) +
+          (row.eliminated ? ' <span class="elim-tag">Eliminated</span>' : '') + '</div></td>' +
         '<td><div class="teams">' + chips + '</div></td>' +
         '<td class="goals-cell"><span class="goals-num">' + row.total + '</span>' +
         '<span class="goals-sub">' + sub + '</span></td>';
@@ -132,6 +142,50 @@
     } else {
       warnBox.hidden = true;
     }
+  }
+
+  /* Render the most recently played day's matches as normal scorelines. */
+  function renderRecent(matches) {
+    var section = $("#recent");
+    var list = $("#recent-list");
+    var titleEl = $("#recent-title");
+
+    var played = matches.filter(function (m) {
+      return m.score && m.date && (m.score.et || m.score.ft || m.score.ht);
+    });
+    if (!played.length) {
+      section.hidden = true;
+      return;
+    }
+
+    var latest = played.reduce(function (max, m) {
+      return m.date > max ? m.date : max;
+    }, played[0].date);
+
+    var dayMatches = played.filter(function (m) { return m.date === latest; });
+
+    var when = new Date(latest + "T00:00:00");
+    var label = isNaN(when.getTime())
+      ? latest
+      : when.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+    titleEl.textContent = "Latest results — " + label;
+
+    list.innerHTML = dayMatches.map(function (m) {
+      var src = m.score.et || m.score.ft || m.score.ht;
+      var a = src[0] || 0, b = src[1] || 0;
+      var so = (m.score.p && (m.score.p[0] || m.score.p[1]))
+        ? ' <span class="so">(pens ' + (m.score.p[0] || 0) + '–' + (m.score.p[1] || 0) + ')</span>'
+        : "";
+      var aet = m.score.et ? ' <span class="so">(a.e.t.)</span>' : "";
+      return '<li class="score">' +
+        '<span class="team-a">' + escapeHtml(norm(m.team1)) + '</span>' +
+        '<span class="line">' + a + ' <span class="dash">–</span> ' + b + '</span>' +
+        '<span class="team-b">' + escapeHtml(norm(m.team2)) + '</span>' +
+        aet + so +
+        '</li>';
+    }).join("");
+
+    section.hidden = false;
   }
 
   function escapeHtml(s) {
@@ -152,6 +206,7 @@
         var matches = (data && data.matches) || [];
         var played = matches.filter(function (m) { return m.score; }).length;
         render(tallyTeams(matches));
+        renderRecent(matches);
         var when = new Date();
         $("#updated").textContent = "Updated " + when.toLocaleString();
         if (played === 0) {

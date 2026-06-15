@@ -33,12 +33,22 @@ const CONFIG = {
   // Each entry: { nickname: "Name", teams: ["Team A", "Team B", ...] }
   // "teams" can hold ANY number of teams (your office rule is 4 each).
   // ---------------------------------------------------------------------------
-  entries: [
-    { nickname: "Example: Sam",  teams: ["Brazil", "France", "Spain", "Germany"] },
-    { nickname: "Example: Jo",   teams: ["Argentina", "England", "Portugal", "Netherlands"] },
-    { nickname: "Example: Priya", teams: ["USA", "Mexico", "Canada", "Morocco"] },
-    { nickname: "Example: Lee",  teams: ["Belgium", "Croatia", "Uruguay", "Japan"] },
-  ],
+entries: [
+  { nickname: "Mike",          teams: ["Spain", "Jordan", "New Zealand", "Uzbekistan"] },
+  { nickname: "Poppy",         teams: ["Ivory Coast", "New Zealand", "Norway", "Uzbekistan"] },
+  { nickname: "James",         teams: ["England", "Scotland", "USA", "Cape Verde"] },
+  { nickname: "Agathe",        teams: ["France", "Iraq", "Jordan", "Curaçao"] },
+  { nickname: "Claude Fable 5 MAX thinking", teams: ["Morocco", "Japan", "Switzerland", "Ecuador"] },
+  { nickname: "Mikael",        teams: ["Canada", "Colombia", "Ecuador", "Paraguay"] },
+  { nickname: "Keri",          teams: ["Scotland", "Egypt", "Czechia", "Ghana"] },
+  { nickname: "Dika",          teams: ["Bosnia", "Croatia", "Japan", "Egypt"] },
+  { nickname: "Theodora",      teams: ["Senegal", "Ghana", "DR Congo", "Ivory Coast"] },
+  { nickname: "Sam",           teams: ["England", "Scotland", "Netherlands", "Belgium"] },
+  { nickname: "Alexander Deng", teams: ["Japan", "South Korea", "New Zealand", "Australia"] },
+  { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Türkiye"] },
+  { nickname: "Molly",         teams: ["Spain", "Senegal", "South Korea", "Portugal"] },
+  { nickname: "Kristina",      teams: ["Uruguay", "Denmark", "South Korea", "Canada"] },
+],
 };
 
 /* =============================================================================

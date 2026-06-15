@@ -93,6 +93,22 @@ tr.r3 .rank-badge { background: var(--bronze); color: #2a1606; }
 
 .nick { font-weight: 600; font-size: 16px; }
 
+/* Eliminated rows — once a nickname hits 22 goals. */
+tr.eliminated { background: rgba(248,113,113,0.12); }
+tr.eliminated:hover { background: rgba(248,113,113,0.18); }
+tr.eliminated td { color: var(--danger); }
+tr.eliminated .nick { color: var(--danger); }
+tr.eliminated .goals-num { color: var(--danger); }
+tr.eliminated .rank-badge { background: var(--danger); color: #2a0606; }
+.elim-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff; background: var(--danger);
+  border-radius: 999px; padding: 2px 8px; margin-left: 8px;
+  vertical-align: middle;
+}
+
 .teams { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -100,9 +116,43 @@ tr.r3 .rank-badge { background: var(--bronze); color: #2a1606; }
   background: var(--panel-2); border: 1px solid var(--line);
   border-radius: 999px; padding: 3px 9px; white-space: nowrap;
 }
+.chip .stat { color: var(--muted); font-weight: 600; }
 .chip .g { color: var(--accent); font-weight: 700; }
 .chip.out { opacity: 0.45; text-decoration: line-through; }
 .chip.bad { border-color: var(--danger); color: var(--danger); }
+
+.legend {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 14px 0 0;
+}
+.legend strong { color: var(--text); }
+
+.recent {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-top: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+.recent h2 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin: 0 0 12px;
+}
+.scores { list-style: none; margin: 0; padding: 0; }
+.score {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+.scores li:last-child { border-bottom: none; }
+.score .team-a { flex: 1; text-align: right; }
+.score .team-b { flex: 1; text-align: left; }
+.score .line { font-weight: 800; white-space: nowrap; }
+.score .dash { color: var(--muted); font-weight: 400; }
+.score .so { color: var(--muted); font-size: 12px; }
 
 .goals-cell { text-align: right; }
 .goals-num { font-size: 22px; font-weight: 800; line-height: 1; }
@@ -111,8 +161,12 @@ tr.r3 .rank-badge { background: var(--bronze); color: #2a1606; }
 .empty { text-align: center; color: var(--muted); padding: 28px 16px; }
 
 .foot {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; margin-top: 18px; color: var(--muted); font-size: 12px;
+}
+.foot-meta {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-  gap: 10px; margin-top: 18px; color: var(--muted); font-size: 12px;
+  gap: 10px;
 }
 .foot a { color: var(--muted); }
 .foot .dot { opacity: 0.5; }
