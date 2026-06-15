@@ -40,14 +40,14 @@ entries: [
   { nickname: "Agathe",        teams: ["France", "Iraq", "Jordan", "Curaçao"] },
   { nickname: "Claude Fable 5 MAX thinking", teams: ["Morocco", "Japan", "Switzerland", "Ecuador"] },
   { nickname: "Mikael",        teams: ["Canada", "Colombia", "Ecuador", "Paraguay"] },
-  { nickname: "Keri",          teams: ["Scotland", "Egypt", "Czechia", "Ghana"] },
-  { nickname: "Dika",          teams: ["Bosnia and Herzegovina", "Croatia", "Japan", "Egypt"] },
+  { nickname: "Keri",          teams: ["Scotland", "Egypt", "Czech Republic", "Ghana"] },
+  { nickname: "Dika",          teams: ["Bosnia & Herzegovina", "Croatia", "Japan", "Egypt"] },
   { nickname: "Theodora",      teams: ["Senegal", "Ghana", "DR Congo", "Ivory Coast"] },
   { nickname: "Sam",           teams: ["England", "Scotland", "Netherlands", "Belgium"] },
   { nickname: "Alexander Deng", teams: ["Japan", "South Korea", "New Zealand", "Australia"] },
-  { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Türkiye"] },
+  { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Turkey"] },
   { nickname: "Molly",         teams: ["Spain", "Senegal", "South Korea", "Portugal"] },
-  { nickname: "Kristina",      teams: ["Uruguay", "Czechia", "South Korea", "Canada"] },
+  { nickname: "Kristina",      teams: ["Uruguay", "Czech Republic", "South Korea", "Canada"] },
 ],
 };
 
@@ -57,18 +57,14 @@ entries: [
    names will resolve in the feed once those play-offs are decided.
    ============================================================================= */
 const VALID_TEAM_NAMES = [
-  // Alternate feed names accepted by validation logic
-  // (prevents false warnings when feed naming differs)
-  "Turkey",
-  "Bosnia",
   // Group A
-  "Mexico", "South Africa", "South Korea", "Czechia",
+  "Mexico", "South Africa", "South Korea", "Czech Republic",
   // Group B
-  "Canada", "Bosnia and Herzegovina", "Bosnia", "Qatar", "Switzerland",
+  "Canada", "Bosnia & Herzegovina", "Qatar", "Switzerland",
   // Group C
   "Brazil", "Morocco", "Haiti", "Scotland",
   // Group D
-  "USA", "Paraguay", "Australia", "Türkiye", "Turkey",
+  "USA", "Paraguay", "Australia", "Turkey",
   // Group E
   "Germany", "Curaçao", "Ivory Coast", "Ecuador",
   // Group F
@@ -85,6 +81,4 @@ const VALID_TEAM_NAMES = [
   "Portugal", "DR Congo", "Uzbekistan", "Colombia",
   // Group L
   "England", "Croatia", "Ghana", "Panama",
-  // Legacy / alternate names occasionally returned by older feed snapshots
-  "Denmark",
 ];

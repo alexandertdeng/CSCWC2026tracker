@@ -59,7 +59,7 @@
     var unknown = [];
 
     var rows = CONFIG.entries.map(function (entry) {
-      var inPlay = 0, shootout = 0;
+      var inPlay = 0, shootout = 0, matches = 0;
       var teams = (entry.teams || []).map(function (teamName) {
         var t = norm(teamName);
         var rec = tally[t] || { inPlay: 0, shootout: 0, matches: 0 };
@@ -67,6 +67,7 @@
         if (!known && Object.keys(validSet).length) unknown.push(t);
         inPlay += rec.inPlay;
         shootout += rec.shootout;
+        matches += rec.matches;
         return {
           name: t,
           goals: rec.inPlay + rec.shootout,
@@ -81,6 +82,7 @@
         teams: teams,
         total: total,
         shootout: shootout,
+        matches: matches,
         eliminated: total >= 22,
       };
     });
@@ -95,7 +97,7 @@
     var body = $("#ranking-body");
     body.innerHTML = "";
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="4" class="empty">No participants yet. Add some in config.js.</td></tr>';
+      body.innerHTML = '<tr><td colspan="5" class="empty">No participants yet. Add some in config.js.</td></tr>';
     }
 
     var activeRank = 0;
@@ -128,7 +130,8 @@
           (row.eliminated ? ' <span class="elim-tag">Eliminated</span>' : '') + '</div></td>' +
         '<td><div class="teams">' + chips + '</div></td>' +
         '<td class="goals-cell"><span class="goals-num">' + row.total + '</span>' +
-        '<span class="goals-sub">' + sub + '</span></td>';
+        '<span class="goals-sub">' + sub + '</span></td>' +
+        '<td class="played-cell"><span class="played-num">' + row.matches + '</span></td>';
       body.appendChild(tr);
     });
 
