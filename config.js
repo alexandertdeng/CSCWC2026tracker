@@ -41,13 +41,13 @@ entries: [
   { nickname: "Claude Fable 5 MAX thinking", teams: ["Morocco", "Japan", "Switzerland", "Ecuador"] },
   { nickname: "Mikael",        teams: ["Canada", "Colombia", "Ecuador", "Paraguay"] },
   { nickname: "Keri",          teams: ["Scotland", "Egypt", "Czechia", "Ghana"] },
-  { nickname: "Dika",          teams: ["Bosnia", "Croatia", "Japan", "Egypt"] },
+  { nickname: "Dika",          teams: ["Bosnia and Herzegovina", "Croatia", "Japan", "Egypt"] },
   { nickname: "Theodora",      teams: ["Senegal", "Ghana", "DR Congo", "Ivory Coast"] },
   { nickname: "Sam",           teams: ["England", "Scotland", "Netherlands", "Belgium"] },
   { nickname: "Alexander Deng", teams: ["Japan", "South Korea", "New Zealand", "Australia"] },
   { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Türkiye"] },
   { nickname: "Molly",         teams: ["Spain", "Senegal", "South Korea", "Portugal"] },
-  { nickname: "Kristina",      teams: ["Uruguay", "Denmark", "South Korea", "Canada"] },
+  { nickname: "Kristina",      teams: ["Uruguay", "Czechia", "South Korea", "Canada"] },
 ],
 };
 
@@ -58,27 +58,27 @@ entries: [
    ============================================================================= */
 const VALID_TEAM_NAMES = [
   // Group A
-  "Mexico", "South Africa", "South Korea", "UEFA Path D winner",
+  "Mexico", "South Africa", "South Korea", "Czechia",
   // Group B
-  "Canada", "UEFA Path A winner", "Qatar", "Switzerland",
+  "Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland",
   // Group C
   "Brazil", "Morocco", "Haiti", "Scotland",
   // Group D
-  "USA", "Paraguay", "Australia", "UEFA Path C winner",
+  "USA", "Paraguay", "Australia", "Türkiye",
   // Group E
   "Germany", "Curaçao", "Ivory Coast", "Ecuador",
   // Group F
-  "Netherlands", "Japan", "UEFA Path B winner", "Tunisia",
+  "Netherlands", "Japan", "Sweden", "Tunisia",
   // Group G
   "Belgium", "Egypt", "Iran", "New Zealand",
   // Group H
   "Spain", "Cape Verde", "Saudi Arabia", "Uruguay",
   // Group I
-  "France", "Senegal", "IC Path 2 winner", "Norway",
+  "France", "Senegal", "Iraq", "Norway",
   // Group J
   "Argentina", "Algeria", "Austria", "Jordan",
   // Group K
-  "Portugal", "IC Path 1 winner", "Uzbekistan", "Colombia",
+  "Portugal", "DR Congo", "Uzbekistan", "Colombia",
   // Group L
   "England", "Croatia", "Ghana", "Panama",
 ];

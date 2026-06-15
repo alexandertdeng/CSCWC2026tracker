@@ -224,6 +224,12 @@
   document.title = CONFIG.contestName || document.title;
   $("#contest-title").textContent = CONFIG.contestName || "World Cup 2026 — Goals Contest";
   $("#refresh").addEventListener("click", load);
+
+  // Render configured participants immediately, before the live data request finishes.
+  // This prevents any placeholder rows hardcoded in index.html from remaining visible
+  // if the football data feed is slow, unavailable, or blocked.
+  render({});
+
   load();
   if (CONFIG.refreshMinutes > 0) {
     setInterval(load, CONFIG.refreshMinutes * 60 * 1000);
