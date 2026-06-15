@@ -41,7 +41,7 @@ entries: [
   },
   {
     nickname: "Poppy",
-    imageUrl: "https://gstt-csc.github.io/assets/img/team/poppy.png",
+    imageUrl: "https://www.nhsfellowship.ai/images/faculty/poppy-cohen.jpg",
     teams: ["Ivory Coast", "New Zealand", "Norway", "Uzbekistan"]
   },
   {
@@ -85,8 +85,8 @@ entries: [
     teams: ["England", "Scotland", "Netherlands", "Belgium"]
   },
   {
-    nickname: "Alexander Deng",
-    imageUrl: "https://gstt-csc.github.io/assets/img/team/Alex.jpg",
+    nickname: "Alex",
+    imageUrl: "https://www.nhsfellowship.ai/images/faculty/alexander-deng.jpg",
     teams: ["Japan", "South Korea", "New Zealand", "Australia"]
   },
   {
