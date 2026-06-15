@@ -34,20 +34,76 @@ const CONFIG = {
   // "teams" can hold ANY number of teams (your office rule is 4 each).
   // ---------------------------------------------------------------------------
 entries: [
-  { nickname: "Mike",          teams: ["Spain", "Jordan", "New Zealand", "Uzbekistan"] },
-  { nickname: "Poppy",         teams: ["Ivory Coast", "New Zealand", "Norway", "Uzbekistan"] },
-  { nickname: "James",         teams: ["England", "Scotland", "USA", "Cape Verde"] },
-  { nickname: "Agathe",        teams: ["France", "Iraq", "Jordan", "Curaçao"] },
-  { nickname: "Claude Fable 5 MAX thinking", teams: ["Morocco", "Japan", "Switzerland", "Ecuador"] },
-  { nickname: "Mikael",        teams: ["Canada", "Colombia", "Ecuador", "Paraguay"] },
-  { nickname: "Keri",          teams: ["Scotland", "Egypt", "Czech Republic", "Ghana"] },
-  { nickname: "Dika",          teams: ["Bosnia & Herzegovina", "Croatia", "Japan", "Egypt"] },
-  { nickname: "Theodora",      teams: ["Senegal", "Ghana", "DR Congo", "Ivory Coast"] },
-  { nickname: "Sam",           teams: ["England", "Scotland", "Netherlands", "Belgium"] },
-  { nickname: "Alexander Deng", teams: ["Japan", "South Korea", "New Zealand", "Australia"] },
-  { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Turkey"] },
-  { nickname: "Molly",         teams: ["Spain", "Senegal", "South Korea", "Portugal"] },
-  { nickname: "Kristina",      teams: ["Uruguay", "South Korea", "Canada"] },
+  {
+    nickname: "Mike",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/Mike.jpg",
+    teams: ["Spain", "Jordan", "New Zealand", "Uzbekistan"]
+  },
+  {
+    nickname: "Poppy",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/poppy.png",
+    teams: ["Ivory Coast", "New Zealand", "Norway", "Uzbekistan"]
+  },
+  {
+    nickname: "James",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/james.jpeg",
+    teams: ["England", "Scotland", "USA", "Cape Verde"]
+  },
+  {
+    nickname: "Agathe",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/Agathe.jpg",
+    teams: ["France", "Iraq", "Jordan", "Curaçao"]
+  },
+  {
+    nickname: "Claude Fable 5 MAX thinking",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/85/Anthropic_logo.svg",
+    teams: ["Morocco", "Japan", "Switzerland", "Ecuador"]
+  },
+  {
+    nickname: "Mikael",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/mikael.jpg",
+    teams: ["Canada", "Colombia", "Ecuador", "Paraguay"]
+  },
+  {
+    nickname: "Keri",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/KeriA.jpg",
+    teams: ["Scotland", "Egypt", "Czech Republic", "Ghana"]
+  },
+  {
+    nickname: "Dika",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/Dika.jpg",
+    teams: ["Bosnia & Herzegovina", "Croatia", "Japan", "Egypt"]
+  },
+  {
+    nickname: "Theodora",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/theodora.JPG",
+    teams: ["Senegal", "Ghana", "DR Congo", "Ivory Coast"]
+  },
+  {
+    nickname: "Sam",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/sam.jpg",
+    teams: ["England", "Scotland", "Netherlands", "Belgium"]
+  },
+  {
+    nickname: "Alexander Deng",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/Alex.jpg",
+    teams: ["Japan", "South Korea", "New Zealand", "Australia"]
+  },
+  {
+    nickname: "Eleanor",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/Eleanor.jpg",
+    teams: ["Germany", "Switzerland", "Tunisia", "Turkey"]
+  },
+  {
+    nickname: "Molly",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/molly.jpg",
+    teams: ["Spain", "Senegal", "South Korea", "Portugal"]
+  },
+  {
+    nickname: "Kristina",
+    imageUrl: "https://gstt-csc.github.io/assets/img/team/kristina.jpg",
+    teams: ["Uruguay", "South Korea", "Canada"]
+  },
 ],
 };
 

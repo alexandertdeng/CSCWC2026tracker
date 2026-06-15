@@ -79,6 +79,7 @@
       var total = inPlay + shootout;
       return {
         nickname: entry.nickname,
+        imageUrl: entry.imageUrl || "",
         teams: teams,
         total: total,
         shootout: shootout,
@@ -123,19 +124,20 @@
                ' <span class="g">G:' + t.goals + '</span></span>';
       }).join("");
 
-      var sub = row.eliminated
-        ? "eliminated · 22+ goals"
-        : (row.shootout ? "incl. " + row.shootout + " shootout" : "across all teams");
-
       var badge = row.eliminated ? "OUT" : rank;
+      var avatar = row.imageUrl
+        ? '<img class="avatar" src="' + escapeHtml(row.imageUrl) + '" alt="" loading="lazy">'
+        : '<span class="avatar avatar-fallback">' + escapeHtml(row.nickname.charAt(0) || "?") + '</span>';
 
       tr.innerHTML =
         '<td class="col-rank"><span class="rank-badge">' + badge + '</span></td>' +
-        '<td><div class="nick">' + escapeHtml(row.nickname) +
-          (row.eliminated ? ' <span class="elim-tag">Eliminated</span>' : '') + '</div></td>' +
+        '<td><div class="player">' + avatar + '<div class="player-text"><div class="nick">' + escapeHtml(row.nickname) +
+          (row.eliminated ? ' <span class="elim-tag">Eliminated</span>' : '') + '</div></div></div></td>' +
         '<td><div class="teams">' + chips + '</div></td>' +
         '<td class="goals-cell"><span class="goals-num">' + row.total + '</span>' +
-        '<span class="goals-sub">' + sub + '</span></td>' +
+        '<span class="goals-sub">' + (row.eliminated
+          ? "eliminated · 22+ goals"
+          : (row.shootout ? "incl. " + row.shootout + " shootout" : "across all teams")) + '</span></td>' +
         '<td class="played-cell"><span class="played-num">' + row.matches + '</span></td>';
       body.appendChild(tr);
     });
