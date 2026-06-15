@@ -57,14 +57,18 @@ entries: [
    names will resolve in the feed once those play-offs are decided.
    ============================================================================= */
 const VALID_TEAM_NAMES = [
+  // Alternate feed names accepted by validation logic
+  // (prevents false warnings when feed naming differs)
+  "Turkey",
+  "Bosnia",
   // Group A
   "Mexico", "South Africa", "South Korea", "Czechia",
   // Group B
-  "Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland",
+  "Canada", "Bosnia and Herzegovina", "Bosnia", "Qatar", "Switzerland",
   // Group C
   "Brazil", "Morocco", "Haiti", "Scotland",
   // Group D
-  "USA", "Paraguay", "Australia", "Türkiye",
+  "USA", "Paraguay", "Australia", "Türkiye", "Turkey",
   // Group E
   "Germany", "Curaçao", "Ivory Coast", "Ecuador",
   // Group F
@@ -81,4 +85,6 @@ const VALID_TEAM_NAMES = [
   "Portugal", "DR Congo", "Uzbekistan", "Colombia",
   // Group L
   "England", "Croatia", "Ghana", "Panama",
+  // Legacy / alternate names occasionally returned by older feed snapshots
+  "Denmark",
 ];
