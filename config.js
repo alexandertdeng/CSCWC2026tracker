@@ -47,7 +47,7 @@ entries: [
   { nickname: "Alexander Deng", teams: ["Japan", "South Korea", "New Zealand", "Australia"] },
   { nickname: "Eleanor",       teams: ["Germany", "Switzerland", "Tunisia", "Turkey"] },
   { nickname: "Molly",         teams: ["Spain", "Senegal", "South Korea", "Portugal"] },
-  { nickname: "Kristina",      teams: ["Uruguay", "Czech Republic", "South Korea", "Canada"] },
+  { nickname: "Kristina",      teams: ["Uruguay", "South Korea", "Canada"] },
 ],
 };
 
