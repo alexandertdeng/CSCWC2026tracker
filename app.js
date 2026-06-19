@@ -46,6 +46,62 @@
     return tally;
   }
 
+  function isOwnGoal(goal) {
+    return !!(goal && (goal.owngoal || goal.ownGoal || goal.own_goal));
+  }
+
+  function countOwnGoals(matches) {
+    return matches.reduce(function (total, match) {
+      var goals1 = Array.isArray(match.goals1) ? match.goals1 : [];
+      var goals2 = Array.isArray(match.goals2) ? match.goals2 : [];
+      return total + goals1.filter(isOwnGoal).length + goals2.filter(isOwnGoal).length;
+    }, 0);
+  }
+
+  function getMatchTime(match) {
+    return match.datetime || match.date || "";
+  }
+
+  function getOwnGoalScoringTeam(match, goalSide) {
+    if (goalSide === "goals1") return norm(match.team2);
+    if (goalSide === "goals2") return norm(match.team1);
+    return "";
+  }
+
+  function getOwnGoalTeams(matches) {
+    return matches
+      .slice()
+      .sort(function (a, b) {
+        return new Date(getMatchTime(a) || 0) - new Date(getMatchTime(b) || 0);
+      })
+      .flatMap(function (match) {
+        var goals1 = Array.isArray(match.goals1) ? match.goals1 : [];
+        var goals2 = Array.isArray(match.goals2) ? match.goals2 : [];
+
+        return [
+          ...goals1.filter(isOwnGoal).map(function (goal) {
+            return {
+              team: getOwnGoalScoringTeam(match, "goals1"),
+              goal: goal,
+              match: match
+            };
+          }),
+          ...goals2.filter(isOwnGoal).map(function (goal) {
+            return {
+              team: getOwnGoalScoringTeam(match, "goals2"),
+              goal: goal,
+              match: match
+            };
+          })
+        ].filter(function (item) { return item.team; });
+      });
+  }
+
+  function renderOwnGoalsTotal(ownGoals) {
+    var el = $("#own-goals-total");
+    if (el) el.textContent = ownGoals;
+  }
+
   function validTeamSet() {
     var set = {};
     (typeof VALID_TEAM_NAMES !== "undefined" ? VALID_TEAM_NAMES : []).forEach(function (n) {
@@ -58,7 +114,29 @@
     var validSet = validTeamSet();
     var unknown = [];
 
+    var ownGoals = countOwnGoals(matches);
+    var ownGoalTeams = getOwnGoalTeams(matches);
+    renderOwnGoalsTotal(ownGoals);
+
     var rows = CONFIG.entries.map(function (entry) {
+      if (entry.type === "own_goals") {
+        return {
+          nickname: entry.nickname,
+          imageUrl: entry.imageUrl || "",
+          type: "own_goals",
+          teams: ownGoalTeams.map(function (item) {
+            return {
+              name: item.team,
+              flag: (typeof TEAM_FLAGS !== "undefined" ? TEAM_FLAGS[item.team] : "") || ""
+            };
+          }),
+          total: ownGoals,
+          shootout: 0,
+          matches: "",
+          eliminated: ownGoals >= 22,
+          perfect: ownGoals === 21
+        };
+      }
       var inPlay = 0, shootout = 0, matches = 0;
       var teams = (entry.teams || []).map(function (teamName) {
         var t = norm(teamName);
@@ -105,6 +183,7 @@
     var activeRank = 0;
     rows.forEach(function (row, i) {
       var rank = row.eliminated ? null : ++activeRank;
+      var isOwnGoalsRow = row.type === "own_goals";
       var badge = row.eliminated ? "OUT" : rank;
       var statusBadge = row.eliminated
         ? '<span class="status-badge ko-badge" aria-label="Knocked out">KO</span>'
@@ -122,18 +201,24 @@
         var map = (typeof TEAM_FLAGS !== "undefined") ? TEAM_FLAGS : {};
         return map[name] || "";
       }
-      var chips = row.teams.map(function (t) {
-        var cls = "chip" + (t.known ? "" : " bad");
-        var title = t.known
-          ? (t.matches + " match" + (t.matches === 1 ? "" : "es") + " played"
-             + (t.shootout ? " · incl. " + t.shootout + " shootout" : ""))
-          : "Unknown team name — check spelling against config.js";
-        return '<span class="' + cls + '" title="' + title + '">' +
-               (countryFlag(t.name) ? '<span class="flag">' + countryFlag(t.name) + '</span> ' : '') +
-               escapeHtml(t.name) +
-               ' <span class="stat">P:' + t.matches + '</span>' +
-               ' <span class="g">G:' + t.goals + '</span></span>';
-      }).join("");
+      var chips = isOwnGoalsRow
+        ? row.teams.map(function (t) {
+          return '<span class="chip" title="Own goal scored by ' + escapeHtml(t.name) + '">' +
+                 (t.flag ? '<span class="flag">' + t.flag + '</span> ' : '') +
+                 escapeHtml(t.name) + '</span>';
+        }).join("")
+        : row.teams.map(function (t) {
+          var cls = "chip" + (t.known ? "" : " bad");
+          var title = t.known
+            ? (t.matches + " match" + (t.matches === 1 ? "" : "es") + " played"
+               + (t.shootout ? " · incl. " + t.shootout + " shootout" : ""))
+            : "Unknown team name — check spelling against config.js";
+          return '<span class="' + cls + '" title="' + title + '">' +
+                 (countryFlag(t.name) ? '<span class="flag">' + countryFlag(t.name) + '</span> ' : '') +
+                 escapeHtml(t.name) +
+                 ' <span class="stat">P:' + t.matches + '</span>' +
+                 ' <span class="g">G:' + t.goals + '</span></span>';
+        }).join("");
 
       tr.innerHTML =
         '<td class="col-rank"><span class="rank-badge">' + badge + '</span></td>' +
@@ -144,7 +229,7 @@
         '<span class="goals-sub">' + (row.eliminated
           ? "eliminated · >21 goals"
           : (row.perfect ? "perfect · exactly 21 goals" : (row.shootout ? "incl. " + row.shootout + " shootout" : ""))) + '</span></td>' +
-        '<td class="played-cell"><span class="played-num">' + row.matches + '</span></td>';
+        '<td class="played-cell"><span class="played-num">' + (isOwnGoalsRow ? "" : row.matches) + '</span></td>';
       body.appendChild(tr);
     });
 

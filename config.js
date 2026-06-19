@@ -104,6 +104,12 @@ entries: [
     imageUrl: "https://gstt-csc.github.io/assets/img/team/kristina.jpg",
     teams: ["Uruguay", "South Korea", "Canada", "Jordan"]
   },
+  {
+    nickname: "Own Goal",
+    imageUrl: "https://makeameme.org/media/templates/250/picard-facepalm.jpg",
+    type: "own_goals",
+    teams: []
+  },
 ],
 };
 
