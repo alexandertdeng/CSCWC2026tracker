@@ -105,7 +105,7 @@ entries: [
     teams: ["Uruguay", "South Korea", "Canada", "Jordan"]
   },
   {
-    nickname: "Own Goal",
+    nickname: "Owen",
     imageUrl: "https://makeameme.org/media/templates/250/picard-facepalm.jpg",
     type: "own_goals",
     teams: []
