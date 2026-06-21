@@ -62,6 +62,59 @@
     return match.datetime || match.date || "";
   }
 
+  function minuteToNumber(minute) {
+    var text = String(minute || "0");
+    var parts = text.split("+");
+    var base = parseInt(parts[0], 10) || 0;
+    var extra = parseInt(parts[1], 10) || 0;
+    return base + extra;
+  }
+
+  function goalSortKey(match, goal, fallbackIndex) {
+    var matchTime = getMatchTime(match);
+    var base = matchTime ? new Date(matchTime).getTime() : 0;
+    if (!base || isNaN(base)) base = new Date((match.date || "1970-01-01") + "T00:00:00").getTime();
+    var minuteOffset = minuteToNumber(goal && goal.minute) * 60 * 1000;
+    return base + minuteOffset + fallbackIndex;
+  }
+
+  function getTeamGoalEvents(matches) {
+    var events = {}; // teamName -> [{ sortKey }]
+
+    function addEvent(team, sortKey) {
+      var t = norm(team);
+      if (!t) return;
+      if (!events[t]) events[t] = [];
+      events[t].push({ sortKey: sortKey });
+    }
+
+    matches.forEach(function (match) {
+      var goals1 = Array.isArray(match.goals1) ? match.goals1 : [];
+      var goals2 = Array.isArray(match.goals2) ? match.goals2 : [];
+
+      goals1.forEach(function (goal, idx) {
+        addEvent(match.team1, goalSortKey(match, goal, idx));
+      });
+      goals2.forEach(function (goal, idx) {
+        addEvent(match.team2, goalSortKey(match, goal, idx));
+      });
+
+      if (CONFIG.includeShootoutGoals && match.score && match.score.p) {
+        var shootoutBase = goalSortKey(match, { minute: "130" }, goals1.length + goals2.length);
+        var p1 = match.score.p[0] || 0;
+        var p2 = match.score.p[1] || 0;
+        for (var i = 0; i < p1; i += 1) addEvent(match.team1, shootoutBase + i);
+        for (var j = 0; j < p2; j += 1) addEvent(match.team2, shootoutBase + p1 + j);
+      }
+    });
+
+    Object.keys(events).forEach(function (team) {
+      events[team].sort(function (a, b) { return a.sortKey - b.sortKey; });
+    });
+
+    return events;
+  }
+
   function getOwnGoalScoringTeam(match, goalSide) {
     if (goalSide === "goals1") return norm(match.team2);
     if (goalSide === "goals2") return norm(match.team1);
@@ -116,6 +169,7 @@
 
     var ownGoals = countOwnGoals(matches);
     var ownGoalTeams = getOwnGoalTeams(matches);
+    var teamGoalEvents = getTeamGoalEvents(matches);
     renderOwnGoalsTotal(ownGoals);
 
     var rows = CONFIG.entries.map(function (entry) {
@@ -133,11 +187,13 @@
           total: ownGoals,
           shootout: 0,
           matches: "",
+          lastGoalTime: ownGoalTeams.length ? goalSortKey(ownGoalTeams[ownGoalTeams.length - 1].match, ownGoalTeams[ownGoalTeams.length - 1].goal, ownGoalTeams.length - 1) : null,
           eliminated: ownGoals >= 22,
           perfect: ownGoals === 21
         };
       }
       var inPlay = 0, shootout = 0, matches = 0;
+      var goalEvents = [];
       var teams = (entry.teams || []).map(function (teamName) {
         var t = norm(teamName);
         var rec = tally[t] || { inPlay: 0, shootout: 0, matches: 0 };
@@ -146,6 +202,7 @@
         inPlay += rec.inPlay;
         shootout += rec.shootout;
         matches += rec.matches;
+        goalEvents = goalEvents.concat(teamGoalEvents[t] || []);
         return {
           name: t,
           goals: rec.inPlay + rec.shootout,
@@ -155,6 +212,8 @@
         };
       });
       var total = inPlay + shootout;
+      goalEvents.sort(function (a, b) { return a.sortKey - b.sortKey; });
+      var lastGoalEvent = total > 0 ? goalEvents[total - 1] : null;
       return {
         nickname: entry.nickname,
         imageUrl: entry.imageUrl || "",
@@ -162,6 +221,7 @@
         total: total,
         shootout: shootout,
         matches: matches,
+        lastGoalTime: lastGoalEvent ? lastGoalEvent.sortKey : null,
         eliminated: total >= 22,
         perfect: total === 21,
       };
@@ -171,6 +231,21 @@
       // Eliminated nicknames always sink to the bottom.
       if (a.eliminated !== b.eliminated) return a.eliminated ? 1 : -1;
       if (b.total !== a.total) return b.total - a.total;
+
+      var aIsOwen = norm(a.nickname).toLowerCase() === "owen";
+      var bIsOwen = norm(b.nickname).toLowerCase() === "owen";
+      if (aIsOwen !== bIsOwen) return aIsOwen ? -1 : 1;
+
+      var aMatches = Number(a.matches) || 0;
+      var bMatches = Number(b.matches) || 0;
+      if (aMatches !== bMatches) return aMatches - bMatches;
+
+      if (a.lastGoalTime !== b.lastGoalTime) {
+        if (a.lastGoalTime === null) return 1;
+        if (b.lastGoalTime === null) return -1;
+        return a.lastGoalTime - b.lastGoalTime;
+      }
+
       return a.nickname.localeCompare(b.nickname);
     });
 
