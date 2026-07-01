@@ -58,6 +58,77 @@
     }, 0);
   }
 
+  function textForStage(match) {
+    return [match.stage, match.round, match.title, match.name]
+      .map(function (v) { return norm(v).toLowerCase(); })
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  function isKnockoutMatch(match) {
+    return /round of 32|round-of-32|last 32|1\/16|sixteenth|round of 16|round-of-16|last 16|1\/8|quarter|semi|third place|third-place|final/.test(textForStage(match));
+  }
+
+  function isGroupStageMatch(match) {
+    var text = textForStage(match);
+    return /group/.test(text) || (/matchday/.test(text) && !isKnockoutMatch(match));
+  }
+
+  function isRoundOf32Match(match) {
+    return /round of 32|round-of-32|last 32|1\/16|sixteenth/.test(textForStage(match));
+  }
+
+  function matchWinnerSide(match) {
+    if (!match.score) return null;
+    var src = match.score.p || match.score.et || match.score.ft;
+    if (!src || src[0] === src[1]) return null;
+    return src[0] > src[1] ? 0 : 1;
+  }
+
+  function isConcreteTeamName(team) {
+    var t = norm(team).toLowerCase();
+    return !!t && !/winner|runner-up|runner up|third place|3rd place|group|match|tbd|to be determined|unknown/.test(t);
+  }
+
+  function eliminatedTeamSet(matches) {
+    var eliminated = {};
+    var groupTeams = {};
+    var roundOf32Teams = {};
+    var completedGroupMatches = 0;
+
+    matches.forEach(function (match) {
+      var team1 = norm(match.team1);
+      var team2 = norm(match.team2);
+
+      if (isGroupStageMatch(match)) {
+        if (isConcreteTeamName(team1)) groupTeams[team1] = true;
+        if (isConcreteTeamName(team2)) groupTeams[team2] = true;
+        if (match.score) completedGroupMatches += 1;
+      }
+
+      if (isRoundOf32Match(match)) {
+        if (isConcreteTeamName(team1)) roundOf32Teams[team1] = true;
+        if (isConcreteTeamName(team2)) roundOf32Teams[team2] = true;
+      }
+
+      if (isKnockoutMatch(match) && match.score) {
+        var winnerSide = matchWinnerSide(match);
+        if (winnerSide !== null) {
+          var loser = winnerSide === 0 ? team2 : team1;
+          if (isConcreteTeamName(loser)) eliminated[loser] = true;
+        }
+      }
+    });
+
+    if (completedGroupMatches >= 72 && Object.keys(roundOf32Teams).length >= 32) {
+      Object.keys(groupTeams).forEach(function (team) {
+        if (!roundOf32Teams[team]) eliminated[team] = true;
+      });
+    }
+
+    return eliminated;
+  }
+
   function getMatchTime(match) {
     return match.datetime || match.date || "";
   }
@@ -165,6 +236,7 @@
 
   function render(tally, matches) {
     var validSet = validTeamSet();
+    var eliminatedTeams = eliminatedTeamSet(matches);
     var unknown = [];
 
     var ownGoals = countOwnGoals(matches);
@@ -272,14 +344,22 @@
         tr.style.background = "rgba(255, 215, 0, 0.18)";
       }
 
-      function countryFlag(name) {
+      function flagHtml(name) {
         var map = (typeof TEAM_FLAGS !== "undefined") ? TEAM_FLAGS : {};
-        return map[name] || "";
+        var flag = map[name] || "";
+        return flag ? '<span class="flag">' + flag + '</span> ' : '';
+      }
+
+      function teamNameHtml(name) {
+        var escaped = escapeHtml(name);
+        return eliminatedTeams[name]
+          ? '<span style="text-decoration:line-through">' + escaped + '</span>'
+          : escaped;
       }
       var chips = isOwnGoalsRow
         ? row.teams.map(function (t) {
           return '<span class="chip" title="Own goal scored by ' + escapeHtml(t.name) + '">' +
-                 (t.flag ? '<span class="flag">' + t.flag + '</span> ' : '') +
+                 flagHtml(t.name) +
                  escapeHtml(t.name) + '</span>';
         }).join("")
         : row.teams.map(function (t) {
@@ -289,8 +369,8 @@
                + (t.shootout ? " · incl. " + t.shootout + " shootout" : ""))
             : "Unknown team name — check spelling against config.js";
           return '<span class="' + cls + '" title="' + title + '">' +
-                 (countryFlag(t.name) ? '<span class="flag">' + countryFlag(t.name) + '</span> ' : '') +
-                 escapeHtml(t.name) +
+                 flagHtml(t.name) +
+                 teamNameHtml(t.name) +
                  ' <span class="stat">P:' + t.matches + '</span>' +
                  ' <span class="g">G:' + t.goals + '</span></span>';
         }).join("");
