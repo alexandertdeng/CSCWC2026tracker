@@ -56,7 +56,7 @@ entries: [
   },
   {
     nickname: "Claude Fable 5 MAX thinking",
-    imageUrl: "https://images.seeklogo.com/logo-png/55/2/claude-logo-png_seeklogo-554534.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Claude_AI_symbol.svg",
     teams: ["Morocco", "Japan", "Switzerland", "Ecuador"]
   },
   {
